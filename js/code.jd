@@ -1,0 +1,32 @@
+var globaltask;
+$(document).ready(function(){
+	var numbers = new Bloodhound({
+		datumTokenizer: function(d) {
+			return Bloodhound.tokenizers.whitespace(d.num);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		local: [
+		{ num: 'Youtube: ' },
+		{ num: 'News: ' },
+		{ num: 'Search: ' },
+		{ num: 'Define: ' },
+		{ num: 'Go To Url: ' },
+		{ num: 'How to: ' },
+		{ num: 'Images: ' },
+		{ num: 'Tech News This Week' },
+		{ num: 'App: Calendar' },
+		{ num: 'Tech News This Week' },
+		{ num: 'ten' }
+		]
+	});
+                              
+	numbers.initialize();
+                              
+	$('.typeahead').typeahead(null, {
+		minLength: 0,
+		displayKey: 'num',
+		items: 9999,
+		source: numbers.ttAdapter()
+	});
+                              
+});

@@ -1,0 +1,89 @@
+#boddy{
+	transition: 3s ease-in;
+	-moz-transition: 3s ease-in;
+	-ms-transition: 3s ease-in;
+	-o-transition: 3s ease-in;
+	-webkit-transition: 3s ease-in;
+}
+
+.clickablee{
+	cursor: pointer;
+}
+.twitter-typeahead{
+	width:100%;
+            
+}
+.typeahead, .tt-query, .tt-hint {
+	border: 2px solid #CCCCCC;
+	font-size: 24px;
+	height: 30px;
+	line-height: 30px;
+	outline: medium none;
+	padding: 8px 12px;
+	width:100%;
+}
+.typeahead {
+	text-align: center;
+	background-color: #FFFFFF;
+            
+            
+}
+.typeahead:focus {
+	text-align:left;
+	border-bottom:1px grey inset !important;
+            
+}
+        
+.tt-query {
+	backgroud-color: #fff !important;
+            
+}
+.tt-hint {
+	color: #999999;
+            
+}
+.tt-dropdown-menu {
+	background-color: #FFFFFF !important;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	margin-top: 12px;
+	padding: 8px 0;
+	width:100%;
+	z-index:10000!important;
+	display:visible!important;
+            
+
+}
+.dropdown-menu {
+            
+}
+.tt-suggestion {
+	font-size: 24px;
+	line-height: 24px;
+	padding: 3px 20px;
+            
+}
+.tt-suggestion.tt-is-under-cursor {
+	background-color: #0097CF;
+	color: #FFFFFF;
+            
+}
+.tt-suggestion p {
+            
+}
+
+#lowerframe body {
+    overflow-x:hidden !important;
+}
+
+.Absolute-Center {
+	position: relative;
+	top: 30%;
+	height:40%;
+}
+.Absolute-Center1 {
+	position: relative;
+	top: 20%;
+	height:60%;
+}
