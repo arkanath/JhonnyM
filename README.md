@@ -14,3 +14,6 @@ Features:
 For the CSS design it uses the Twitter Bootstrap v3 Framework and Animate.css.
 
 This app can be made much better by using APIs instead of embedding frames.
+
+Working example of the project can be found on http://cse.iitkgp.ac.in/~arkanath/JhonnyM/.
+Also as a chrome extension on https://chrome.google.com/webstore/detail/jhonnym-productive-new-ta/femjlnmpghjecaihednkodhodlnhhgma
