@@ -12,15 +12,18 @@
     </head>
     <body id="boddy" style="width:100vw; height:100vh; overflow:hidden;">
         <div class = "row" style=" background-color:url('back.jpg'); background-size:cover;">
-            <div id="sidebarstats" class="col-md-3 animated rotateInDownLeft " style="text-align:center; display:none; padding:0; height:100%; overflow-x:hidden;overflow-y:scroll;">
+            <div id="sidebarstats" class="col-md-3 animated rotateInDownLeft " style="text-align:center; display:none; padding:0; height:100%; overflow-x:hidden;overflow-y:auto;">
                 <h1>Your Statistics</h1>
 				<hr style="margin:0;">
 				<h4> For Last<span> <input id="statcount" type="text" style="text-align:center;width:20%; margin-left:auto;"></span> <span id="dday">Day</span></h4>
 				<hr style="margin:0;">
 				<span id="stdata"></span>
             </div>
-            <div id="sidebartasks" class="col-md-3 animated rotateInDownLeft " style="padding:0;overflow:hidden;">
-                <iframe src="http://todoist.com" style="border:none;height:100vh; width:100%;"></iframe>
+            <div id="sidebartasks" class="col-md-3 animated rotateInDownLeft " style="height:100vh;padding:0;overflow:hidden;">
+                <div id="loading2">
+                <h1 style="text-align:center; font-weight:200;"><image width="200"src="td.jpg"></h1></div>
+                <p id="didnot2"style="position:absolute; bottom:0;width:100%; display:none;text-align:center;">Make sure you are connected to the internet.</p>
+                <iframe id="todoframe" src="http://todoist.com" style="display:none;border:none;height:100vh; width:100%;"></iframe>
             </div>
             <div class="col-md-6" style="text-align:center; height:100vh; padding:0;overflow:hidden;">
                 <div id = "status" style="display:block;height:210px; position:inherit;">
@@ -40,10 +43,10 @@
                     <h3 style=" margin-top:10px; z-index:-1000!important; font-weight:100;"><span  class="animated bounceInUp" id="minn"></span></h3>
                     <hr id="linee"class = 'animated bounceInUp soften' style="margin-bottom:0;"></hr>
                 </div>
-                <div id = "lower" style="height:100%;padding-bottom:210px;position:initial; overflow:scroll;">
+                <div id = "lower" style="height:100%;padding-bottom:210px;position:initial; overflow:hidden;">
     				<div  class="animated bounceInUp" id="lowerdisplay" style="text-align:center;">
 						
-						<div id = "normal">
+						<div id = "normal" style="overflow:auto;">
     					<h1>Some things I can show you:</h1><hr style='width:50%;'>
 						<h3 class='clickablee' id='click1' style='font-weight:100;'></h3>
 						<h3 class='clickablee' id='click2' style='font-weight:100;'></h3>
@@ -59,12 +62,14 @@
 						</div>
 					</div>
     				</div>
-                    <iframe class="animated bounceInUp" src=""id="lowerframe" style=" display:none; border:0; width:100%; height:100%; background-repeat:no-repeat;
+                    <iframe class="animated bounceInUp" src=""id="lowerframe" class=" display:none;" style=" border:0; width:100%; height:100%; background-repeat:no-repeat;
                         background-position:center; background-image:url('load.gif');overflow-x: hidden!important;" allowfullscreen></iframe>
                 </div>
             </div>
-            <div class="col-md-3 animated rotateInDownRight " style="padding:0; overflow-x:hidden;">
-                <iframe src="http://en.m.wikipedia.org/" style="border:none;height:100vh; width:100%;"></iframe>
+            <div class="col-md-3 animated rotateInDownRight " style="padding:0;height:100vh; overflow-x:hidden;">
+                <div id="loading">
+                <h1 style="text-align:center; font-weight:200;"><image width="200"src="digg.jpg"></h1></div><p id="didnot1" style="position:absolute; bottom:0;width:100%; display:none;text-align:center;">Make sure you are connected to the internet.</p>
+                <iframe id="rdigg" src="http://digg.com" style="display:none;border:none;height:100vh; width:100%;"></iframe>
             </div>
         </div>
     </body>

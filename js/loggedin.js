@@ -37,8 +37,50 @@ function onGeneratedRow(rows)
 	ans.push(jsonData5);
 	return ans;
 }
-$(document).ready(function(){ 
+
+$(document).on("dblclick", function (){
+    $("#task").trigger("focus");
+ });
+
+ $('#rdigg').contents().delegate('digg-alerts-container', 'onload', function() {
+      alert("loaded"); 
+  });
+
+var loaded1 = 0;
+var loaded2 = 0;
+$('#rdigg').load(function(){
+	$("#loading").hide();
+  	$("#rdigg").show();
+  	$("#didnot1").hide();
+	loaded1 = 1;
+  	
+  	
+  	$("#rdigg").contents().find("#digg-alerts-container").hide();
+  	setTimeout(function(){
+  			$("#rdigg").contents().find("#digg-header").hide();
+  			setTimeout(function(){
+  				$("#rdigg").contents().find("#digg-header").show();
+  			},1000);
+		},5000);
+
+});
+$('#todoframe').load(function(){
 	
+  	$("#loading2").hide();
+  	$("#didnot2").hide();
+  	$("#todoframe").show();
+  	loaded2 = 1;
+
+});
+$(document).ready(function(){ 
+
+	
+	setTimeout(function(){
+		if(loaded2==0) $('#didnot2').show();
+	},10000);
+	setTimeout(function(){
+		if(loaded1==0) $('#didnot1').show();
+	},10000);
 	$('#clk').jsclock();
 	$("#statcount").val(1);
 	username = getCookie('username');
@@ -49,6 +91,7 @@ $(document).ready(function(){
 	else globaltime = getCookie('starttime');
 
 	html5sql.openDatabase("users","Username Database",	1*1024*1024);
+	
 	html5sql.process(
 		[
 		"SELECT DISTINCT type FROM "+tablename+" WHERE time <> -1 AND type <> 'currentday'",
@@ -76,18 +119,19 @@ $(document).ready(function(){
 			alert("Please report to developer following bug: " + error.message + " when processing " + statement);
 		}    
 	);
-	
 
 	
 	
 	setttime();sett(); 
 	window.setInterval(setT, 1000);
 	
+
+
 	$("#task").keyup(function (e) {
 		if (e.keyCode === 13)
 		{
 			parseinput(0);
-                     
+            
 		}
 	});
 	$("#calend").keyup(function (e) {
@@ -178,7 +222,7 @@ $(document).ready(function(){
 			document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 			document.cookie = "tablename=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 			document.cookie = "currentday=; expires=Thu, 01 Jan 1970 00:00:00 UTC";	
-			window.location.replace('index2.html');
+			window.location.replace('index.html');
 		},1000);
 		
 	}
@@ -252,6 +296,7 @@ function focusgaya()
 	document.getElementById("linee").style.display = "block";
 	document.getElementById("minn").style.display = "block";
 	document.getElementById("iccon").style.display = "block";
+
 }
 
 function showstats(frday)
@@ -436,7 +481,7 @@ function setFrame(){
 	{
 		if(tas[0]=='_firsttimeopen_' || tas[0]=='_justopened_' || tas[0]=='')
 		{
-			showDiv("<h1>About JhonnyM</h1><hr style='width:50%;'><h2>Meet JhonnyM, your dumb assistant.<br></h2><h4 style='font-weght:200; text-align:justify; margin:10px;'>Just tell him what you are doing and he will try his best to serve you. He is <em>always</em> there to keep track of what you are up to. You can see the statistics and improve with time. For categorizing your processes, JhonnyM just picks the thing behind the first colon in your current task (We told you! He is dumb). E.g. 'Meeting: With John' would be categorized as Meeting. If no colon is present, he assumes you don't want him to count. One more thing, JhonnyM really likes Todoist and would recommend you to use the same.<br><br>Start by reading some tech news this week.</h4><h6>This app has been developed by <a href='http://cse.iitkgp.ac.in/~arkanath/'>Arkanath</a>.Report to him for bugs, or fix them on GitHub :)</h6></span>",1);
+			showDiv("<h1>About JhonnyM</h1><hr style='width:50%;'><h2>Meet JhonnyM, your dumb assistant.<br></h2><h4 style='font-weght:200; text-align:justify; margin:10px;'>Just tell him what you are doing and he will try his best to serve you. He is <em>always</em> there to keep track of what you are up to. You can see the statistics and improve with time. For categorizing your processes, JhonnyM just picks the thing behind the first colon in your current task (We told you! He is dumb). E.g. 'Meeting: With John' would be categorized as Meeting. If no colon is present, he assumes you don't want him to count.<br>Your day count is maintained according to your sleep cycles. So whenever you inform JhonnyM that you are sleeping, he increments your day count.<br><br>Start by reading some tech news this week.</h4><h6>This app has been developed by <a href='http://cse.iitkgp.ac.in/~arkanath/'>Arkanath</a>.Report to him for bugs, or fix them on GitHub :)</h6></span>",1);
 		}
 		else if(tas[0]=='Sleeping')
 		{
