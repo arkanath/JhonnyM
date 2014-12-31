@@ -129,7 +129,9 @@ function decide(){
 											"INSERT INTO "+tablename+" VALUES ('Youtube',0,0);",
 											"INSERT INTO "+tablename+" VALUES ('Search Images',0,0);",
 											"INSERT INTO "+tablename+" VALUES ('Search News',0,0);",
-											"INSERT INTO "+tablename+" VALUES ('URL',0,0);",																												
+											"INSERT INTO "+tablename+" VALUES ('URL',0,0);",
+											"INSERT INTO "+tablename+" VALUES ('Calculate',0,0);",						
+											"INSERT INTO "+tablename+" VALUES ('Define',0,0);",																						
 											],
 											function(transaction, results){
 												setCookie('username',$("#username").val(),30);

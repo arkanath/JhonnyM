@@ -6,6 +6,13 @@ var currentday;
 var globaltask;
 var globaltime;
 
+username = getCookie('username');
+tablename = getCookie('tablename');
+currentday = getCookie('currentday');
+globaltask = getCookie('task');
+if(globaltask=='_firsttimeopen_' || globaltask=='_justopened_') globaltime = -2;
+else globaltime = getCookie('starttime');
+
 var urltrigger = 0;
 function onGeneratedRow(rows)
 {
@@ -83,12 +90,6 @@ $(document).ready(function(){
 	},10000);
 	$('#clk').jsclock();
 	$("#statcount").val(1);
-	username = getCookie('username');
-	tablename = getCookie('tablename');
-	currentday = getCookie('currentday');
-	globaltask = getCookie('task');
-	if(globaltask=='_firsttimeopen_' || globaltask=='_justopened_') globaltime = -2;
-	else globaltime = getCookie('starttime');
 
 	html5sql.openDatabase("users","Username Database",	1*1024*1024);
 	
@@ -217,11 +218,11 @@ $(document).ready(function(){
 		parseinput(1);
 		$('#boddy').addClass('animated zoomOutDown');
 		setTimeout(function(){
-			document.cookie = "task=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-			document.cookie = "starttime=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-			document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-			document.cookie = "tablename=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-			document.cookie = "currentday=; expires=Thu, 01 Jan 1970 00:00:00 UTC";	
+			docCookies.removeItem('task');
+			docCookies.removeItem('starttime');
+			docCookies.removeItem('username');
+			docCookies.removeItem('tablename');
+			docCookies.removeItem('currentday');
 			window.location.replace('index.html');
 		},1000);
 		
@@ -230,7 +231,7 @@ $(document).ready(function(){
 	document.getElementById('click1').onclick=function(){
 		var gggl = 	globaltask;
 		if(globaltask.split(':').length>1) gggl = globaltask.split(':')[1];
-		showFrame('http://www.bing.com/search?q='+gggl);
+		showFrame('http://duckduckgo.com/?q='+gggl);
 	}
 	
 	document.getElementById('click2').onclick=function(){
@@ -241,12 +242,7 @@ $(document).ready(function(){
 	document.getElementById('click3').onclick=function(){
 		var gggl = 	globaltask;
 		if(globaltask.split(':').length>1) gggl = globaltask.split(':')[1];
-		showFrame('http://dictionary.reference.com/browse/'+gggl);
-		$('#lower').hide();
-		$('iframe').load(function() {
-		    $('#lower').show();
-		});
-		
+		showFrame('http://www.oxforddictionaries.com/us/definition/american_english/'+gggl);
 	}
 	document.getElementById('click4').onclick=function(){
 		var gggl = 	globaltask;
@@ -270,7 +266,8 @@ $(document).ready(function(){
 	document.getElementById('click6').onclick=function(){
 		var gggl = 	globaltask;
 		if(globaltask.split(':').length>1) gggl = globaltask.split(':')[1];
-		showFrame('http://www.bing.com/images/search?q='+gggl);
+		showFrame('http://duckduckgo.com/?iax=1&ia=images&q='+gggl);
+//		showFrame('http://www.metrolyrics.com/rockstar-lyrics-nickelback.html);
 	}
 });
 
@@ -329,7 +326,7 @@ function parseinput(flag)
 {
 	
 	var tas = globaltask.split(':');
-	globaltime = new Date().getTime() - globaltime;
+	globaltime = new Date().getTime() - getCookie('starttime');
 	if(tas.length>1)
 	{
 		var categ = tas[0];
@@ -476,6 +473,7 @@ function showDiv(str,flag)
 	}
 }
 function setFrame(){
+	// alert('in');
 	var tas = globaltask.split(':');
 	if(tas.length==1)
 	{
@@ -490,12 +488,12 @@ function setFrame(){
 		}
 		else
 		{
-			$('#click1').html("Bing Search for <span style='font-weight:500;'>"+tas[0]+"</span>");
+			$('#click1').html("Search for <span style='font-weight:500;'>"+tas[0]+"</span>");
 			$('#click2').html("YouTube Search for <span style='font-weight:500;'>"+tas[0]+"</span>");
 			$('#click3').html("Define <span style='font-weight:500;'>"+tas[0]+"</span>");
 			$('#click4').html("WikiHow Results for <span style='font-weight:500;'>"+tas[0]+"</span>");
 			$('#click5').html("Wikipedia Results for <span style='font-weight:500;'>"+tas[0]+"</span>");
-			$('#click6').html("Bing Image Search for <span style='font-weight:500;'>"+tas[0]+"</span>");
+			$('#click6').html("Image Search for <span style='font-weight:500;'>"+tas[0]+"</span>");
 			$('#click7').html("Bing News Search for <span style='font-weight:500;'>"+tas[0]+"</span>");
 			showDiv("",0);
 			$('#iccon').removeClass();
@@ -510,9 +508,42 @@ function setFrame(){
 			$('#iccon').removeClass();
 			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-play-circle');
 		}
+		else if(tas[0]=='Calculate')
+		{
+			$('#iccon').removeClass();
+			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-plus');
+			var str= '<h1 style="text-align:center;">Calculator</h1><hr style="width:50%;">';
+			str+='<p class="lead" style="text-align:center;">'+tas[1]+'</p>';
+			var stt;
+			try {
+			    stt = math.eval(tas[1]);
+			    if(stt==undefined)
+			    {
+			    	stt="Some error, see example inputs below.";
+			    }
+			}
+			catch(err) {
+			    stt = "Some error, see example inputs below.";
+			}
+			str+='<h2 style="text-align:center;">'+stt+'</h2>';
+			str+='<hr style="width:75%; margin-bottom:0;">';
+			str+='<h3 style="text-align:center; font-weight:200;">Examples</h3>';
+			str+='<h2 style="text-align:center; font-weight:200;">2*3+4 : <span style="font-weight:500">10</span></h2>';
+			str+='<h2 style="text-align:center; font-weight:200;">cos(45 deg) : <span style="font-weight:500">0.707</span></h2>';
+			str+='<h2 style="text-align:center; font-weight:200;">sqrt(3^2 + 4^2) : <span style="font-weight:500">5</span></h2>';
+			str+='<h2 style="text-align:center; font-weight:200;">sqrt(2+3i) : <span style="font-weight:500">1.67+0.89i</span></h2>';
+
+			showDiv(str,1);
+		}
+		else if(tas[0]=='Define')
+		{
+			showFrame('http://www.oxforddictionaries.com/us/definition/american_english/'+tas[1]);
+			$('#iccon').removeClass();
+			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-bookmark');
+		}
 		else if(tas[0]=='Search')
 		{
-			showFrame('http://www.bing.com/search?q='+tas[1]);
+			showFrame('http://duckduckgo.com/?q='+tas[1]);
 			$('#iccon').removeClass();
 			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-search');
 		}
@@ -524,7 +555,7 @@ function setFrame(){
 		}
 		else if(tas[0]=='Search Images')
 		{
-			showFrame('http://www.bing.com/images/search?q='+tas[1]);
+			showFrame('http://duckduckgo.com/?iax=1&ia=images&q='+tas[1]);
 			$('#iccon').removeClass();
 			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-picture');
 		}
@@ -556,12 +587,12 @@ function setFrame(){
 			}
 			else
 			{
-				$('#click1').html("Bing Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
+				$('#click1').html("Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
 				$('#click2').html("YouTube Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
 				$('#click3').html("Define <span style='font-weight:500;'>"+tas[1]+"</span>");
 				$('#click4').html("WikiHow Results for <span style='font-weight:500;'>"+tas[1]+"</span>");
 				$('#click5').html("Wikipedia Results for <span style='font-weight:500;'>"+tas[1]+"</span>");
-				$('#click6').html("Bing Image Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
+				$('#click6').html("Image Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
 				$('#click7').html("Bing News Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
 				showDiv("",0);
 			}
@@ -596,14 +627,13 @@ function setFrame(){
 		}
 		else
 		{
-			$('#iccon').removeClass();
-			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-thumbs-up');
-			$('#click1').html("Bing Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
+			
+			$('#click1').html("Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
 			$('#click2').html("YouTube Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
 			$('#click3').html("Define <span style='font-weight:500;'>"+tas[1]+"</span>");
 			$('#click4').html("WikiHow Results for <span style='font-weight:500;'>"+tas[1]+"</span>");
 			$('#click5').html("Wikipedia Results for <span style='font-weight:500;'>"+tas[1]+"</span>");
-			$('#click6').html("Bing Image Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
+			$('#click6').html("Image Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
 			$('#click7').html("Bing News Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
 			showDiv("",0);
 		}
@@ -732,28 +762,29 @@ function hashcode(str){
 }
 
 function setCookie(cname,cvalue,exdays) {
-	var d = new Date();
-	d.setTime(d.getTime() + (exdays*24*60*60*1000));
-	var expires = "expires=" + d.toGMTString();
-	document.cookie = cname+"="+cvalue+"; "+expires;
+	docCookies.setItem(cname,cvalue,Infinity);
+	// var d = new Date();
+	// d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	// var expires = "expires=" + d.toGMTString();
+	// document.cookie = cname+"="+cvalue+"; "+expires;
 }
 
 function deletecoin()
 {
-	document.cookie = "task=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-	document.cookie = "starttime=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-	
+	docCookies.removeItem('task');
+	docCookies.removeItem('starttime');
 }
 
 function getCookie(cname) {
-	var name = cname + "=";
-	var ca = document.cookie.split(';');
-	for(var i=0; i<ca.length; i++) {
-		var c = ca[i];
-		while (c.charAt(0)==' ') c = c.substring(1);
-		if (c.indexOf(name) != -1) {
-			return c.substring(name.length, c.length);
-		}
-	}
-	return "";
+	return docCookies.getItem(cname);
+	// var name = cname + "=";
+	// var ca = document.cookie.split(';');
+	// for(var i=0; i<ca.length; i++) {
+	// 	var c = ca[i];
+	// 	while (c.charAt(0)==' ') c = c.substring(1);
+	// 	if (c.indexOf(name) != -1) {
+	// 		return c.substring(name.length, c.length);
+	// 	}
+	// }
+	// return "";
 }
