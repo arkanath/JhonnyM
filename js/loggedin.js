@@ -118,6 +118,13 @@ function setcolor(){
 $(document).ready(function(){ 
 	
 	setcolor();
+	setTimeout(function(){
+		$('body').css('transition', '3s ease-in');
+		$('body').css('-moz-transition', '3s ease-in');
+		$('body').css('-ms-transition', '3s ease-in');
+		$('body').css('-o-transition', '3s ease-in');
+		$('body').css('-webkit-transition', '3s ease-in');
+	},1000);
 	$('#clk').jsclock();
 	$("#statcount").val(1);
 	html5sql.openDatabase("users","Username Database",	1*1024*1024);
