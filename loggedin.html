@@ -1,77 +1,117 @@
 <html>
 <title>JhonnyM, Your dumb assistant.</title>
 <head>
-  <meta charset="utf-8"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
-
-  <link type="text/css" rel="stylesheet" href="css/code.css"></style>
-  <link type="text/css" rel="stylesheet" href="css/bootstrap.css"/>
-  <link type="text/css" rel="stylesheet" href="css/animate.css"/>
-  <script src="js/jquery.min.js"></script>
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
+	<link href='https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+	<link type="text/css" rel="stylesheet" href="css/code.css"></style>
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.css"/>
+	<link type="text/css" rel="stylesheet" href="css/animate.css"/>
+	<script src="js/jquery.min.js"></script>
 </head>
-<body id="boddy" style="width:100vw; height:100vh; overflow:hidden;">
-    <div class = "row" style=" background-color:url('back.jpg'); background-size:cover;">
-        <div id="sidebarstats" class="col-md-3 animated rotateInDownLeft " style="text-align:center; display:none; padding:0; height:100%; overflow-x:hidden;overflow-y:auto;">
-            <h1>Your Statistics</h1>
-            <hr style="margin:0;">
-            <h4> For Last<span> <input id="statcount" type="text" style="text-align:center;width:20%; margin-left:auto;"></span> <span id="dday">Day</span></h4>
-            <hr style="margin:0;">
-            <span id="stdata"></span>
-        </div>
-        <div id="sidebartasks" class="col-md-3 animated rotateInDownLeft " style="height:100vh;padding:0;">
-            <div id="loading2">
-                <h1 style="text-align:center; font-weight:200;"><image width="200"src="td.jpg"></h1>
-            </div>
-            <p id="didnot2"style="position:absolute; bottom:0;width:100%; display:none;text-align:center;">Make sure you are connected to the internet.</p>
-            <iframe id="todoframe" src="http://todoist.com" style="display:none;border:none;height:100vh; width:100%;"></iframe>
-        </div>
-        <div class="col-md-6" style="text-align:center; height:100vh; padding:0;">
-            <div id = "status" style="display:block;height:210px; position:inherit;">
-                <div class="row">
-                    <div class="col-md-4">
-                        <button style="margin-top:10px;" id="buttonstats"  type="button" class = "btn btn-primary">Show Stats</button>
-                    </div>
-                    <div class="col-md-4" style="height:70px; font-size:-webkit-xxx-large;" id="clk">
-                    </div>
-                    <div class="col-md-4">
-                        <button style="margin-top:10px;" id="logoutbutton"  type="button" class = "btn btn-danger">Log Out</button>
-                    </div>
-                </div>
-                <h1 class="animated bounceInUp"id = "uparwala" style="text-align:center; margin:0;">
-                    <input class="typeahead" placeholder="What are you up to, Arkanath?" autocomplete="off" spellcheck="false" dir="auto" type="text" id="task"style="width:100%;border:0; text-align:inherit; " ></input><span style="margin-top:10px;" id="iccon" class="animated zoomIn glyphicon glyphicon-globe"></span>
-                </h1>
-                <h3 style=" margin-top:10px; z-index:-1000!important; font-weight:100;"><span  class="animated bounceInUp" id="minn"></span></h3>
-                <hr id="linee"class = 'animated bounceInUp soften' style="margin-bottom:0;"></hr>
-            </div>
-            <div id = "lower" style="width:100%;height:100%;padding-bottom:210px;position:initial; overflow:auto;">
-                <div  class="animated bounceInUp" id="lowerdisplay" style="width:100%; text-align:center;">
-                    <div id = "normal" style="">
-                        <h1>Some things I can show you:</h1><hr style='width:50%;'>
-                        <h3 class='clickablee' id='click1' style='font-weight:100;'></h3>
-                        <h3 class='clickablee' id='click2' style='font-weight:100;'></h3>
-                        <h3 class='clickablee' id='click3' style='font-weight:100;'></h3>
-                        <h3 class='clickablee' id='click4' style='font-weight:100;'></h3>
-                        <h3 class='clickablee' id='click5' style='font-weight:100;'></h3>
-                        <h3 class='clickablee' id='click6' style='font-weight:100;'></h3>
-                        <h3 class='clickablee' id='click7' style='font-weight:100;'></h3>
-                    </div>
-                    <div id = "abnormal" style="">
-                        <div id="calad" style='display:none;'>
-                            <h1>I need your help.</h1> <h4>At this time, I can only show you google calendars. Also, I need some data.<br><br><ul style='text-align:left'><li> Go to this link: <a target='_blank' href='https://www.google.com/calendar/embedhelper'>https://www.google.com/calendar/embedhelper</a>.</li><li>Select the calendars you want.</li> <li> Select Time Zone</li><li>Click on Update HTML</li> <li>Paste the data below and press Return key.</li></h4> <input id='calend' style='width:100%' type='text'></input> <br><br><h4>Last Time, I promise! - JhonnyM</h4>
-                        </div>
-                    </div>
-                </div>
-                <iframe class="animated bounceInUp" src=""id="lowerframe"  style="display:none; border:0; width:100%; height:100%; background-repeat:no-repeat;background-position:center; background-image:url('load.gif');overflow-x: hidden!important;" allowfullscreen></iframe>
-            </div>
-        </div>
-        <div class="col-md-3 animated rotateInDownRight " style="padding:0;height:100vh; overflow-x:hidden;">
-            <div id="loading">
-                <h1 style="text-align:center; font-weight:200;"><image width="200"src="digg.jpg"></h1></div><p id="didnot1" style="position:absolute; bottom:0;width:100%; display:none;text-align:center;">Make sure you are connected to the internet.</p>
-                <iframe id="rdigg" src="http://digg.com" style="display:none;border:none;height:100vh; width:100%;"></iframe>
-            </div>
-        </div>
-    </div>
+<body style="width:100vw; height:100vh; overflow:hidden;">
+	<div class="row">
+		<div class="col-md-3 robot" style="height:100%;text-align:center; border-right:1px grey solid; padding-right:0;">
+			<div class="appsdiv" style="">
+				<div style="padding-top:10px;">
+					<img src="icon128.png" style="width:50px; margin:auto;">
+					<div style="font-size:-webkit-xxx-large;" id="clk">
+					</div>
+				<hr style="margin:0;">
+				<h4 style="margin-top:10px; z-index:-1000!important;">
+					<span id="taskmain"></span><span style="font-weight:100;"id="minn"></span>
+				</h4>
+				<hr style="margin-top:0;">
+				</div>
+				
+				<h1 style="margin-top:10px;">Apps</h1>
+				<h2 id="appstats" class="appzoom" >Statistics</h2>
+				<h2 id="appcalendar" class="appzoom" >Calendar</h2>
+				<h2 id="appcalc" class="appzoom" >Calculator</h2>
+				<h2 id="apptodoist" class="appzoom">Todoist</h2>
+				<h2 id="appany.do" class="appzoom">Any.Do</h2>
+				<h2 id="appdigg" class="appzoom">Digg</h2>
+				<h2 id="appflipboard" class="appzoom">Flipboard</h2>
+			</div>
+			<div class="col-md-3" style="height:50px; padding-left:0;float:bottom; position:absolute; bottom:50px; width:100%; margin:0;">
+				<div id="changetheme">
+					<hr style="margin:0;">
+					<h3 id="themetext"  class="robot" style="cursor:pointer; margin-top:10px;">Switch to Night Theme</h3>
+				</div>
+			</div>
+			<div class="col-md-3" style="height:50px; padding-left:0; position:absolute; bottom:0px; width:100%; margin:0;">
+				<div id="logoutdiv" class="logoutdiv">
+					<hr style="margin:0;">
+					<h3 class="robot" style="margin-top:10px;">Log Out</h3>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-9" style="height:100%; padding-left:0;">
+			<h1 id = "uparwala" style="border-bottom:1px grey solid; height:40px; margin:0; margin-top:10px;">
+				<input class="typeahead robot" placeholder="What are you up to, Arkanath?" autocomplete="off" dir="auto" type="text" id="task"style="width:100%;border:0; text-align:left; " ></input>
+			</h1>
+			<div id = "lower" class="robot" style="padding-bottom:50px; width:100%;height:100%; position:initial;overflow:auto;">
+				<div  class="" id="lowerdisplay" style="width:100%; text-align:center;">
+					<div id = "normal" style="">
+						<h1>Some things I can show you:</h1><hr style='width:50%;'>
+						<h3 class='clickablee' id='click1' style='font-weight:100;'></h3>
+						<h3 class='clickablee' id='click2' style='font-weight:100;'></h3>
+						<h3 class='clickablee' id='click3' style='font-weight:100;'></h3>
+						<h3 class='clickablee' id='click4' style='font-weight:100;'></h3>
+						<h3 class='clickablee' id='click5' style='font-weight:100;'></h3>
+						<h3 class='clickablee' id='click6' style='font-weight:100;'></h3>
+						<h3 class='clickablee' id='click7' style='font-weight:100;'></h3>
+					</div>
+					<div id = "abnormal" style="">
+						<div id="customhtml">
+						</div>
+						<div id="welcome" style="display:none;">
+							<div id="customhtml">
+								<iframe src = "http://arkanath.github.io/JhonnyM/" style="width:100%; height:100%; border:0; overflow-x: hidden!important;">
+								</iframe>
+							</div>
+						</div>
+						<div id="calculator" style="display:none;">
+							<h1 style="text-align:center;">Calculator</h1>
+							<hr style="width:50%;">
+							<div id="calcinput" placeholder="Input Here" class="lead" style="text-align:center;" contenteditable="true">2*3</div>
+							<h2 id="calcans" style="text-align:center;">6</h2>
+							<hr style="width:75%; margin-bottom:0;">
+							<h3 style="text-align:center; font-weight:200;">Examples</h3>
+							<h2 style="text-align:center; font-weight:200;">2*3+4 : <span style="font-weight:500">10</span></h2>
+							<h2 style="text-align:center; font-weight:200;">cos(45 deg) : <span style="font-weight:500">0.707</span></h2>
+							<h2 style="text-align:center; font-weight:200;">sqrt(3^2 + 4^2) : <span style="font-weight:500">5</span></h2>
+							<h2 style="text-align:center; font-weight:200;">sqrt(2+3i) : <span style="font-weight:500">1.67+0.89i</span></h2>
+						</div>
+						<div id="calad" style='display:none;'>
+							<h1>I need your help.</h1> 
+							<h4>At this time, I can only show you google calendars. Also, I need some data.
+								<br><br>
+								<ul style='text-align:left'>
+									<li> Go to this link: <a target='_blank' href='https://www.google.com/calendar/embedhelper'>https://www.google.com/calendar/embedhelper</a>.
+									</li>
+									<li>Select the calendars you want.</li> <li> Select Time Zone</li><li>Click on Update HTML</li> 
+									<li>Paste the data below and press Return key.</li>
+								</ul>
+							</h4> <input id='calend' style='width:100%' type='text'></input> <br><br><h4>Last Time, I promise! - JhonnyM</h4>
+						</div>
+						<div id="sidebarstats" class="robot" style="text-align:center; display:none;">
+							<h1>Your Statistics</h1>
+							<hr style="margin:0;">
+							<h4> For Last<span> <input id="statcount" type="text" style="text-align:center;width:20%; margin-left:auto;"></span> <span id="dday">Day</span></h4>
+							<hr style="margin:0;">
+							<span id="stdata"></span>
+						</div>
+					</div>
+				</div>
+				<div id="loadinglower" style="display:none; width:100%; height:100%; background-repeat:no-repeat;background-position:center; background-image:url('load.gif');">
+				</div>
+				<iframe src="about:blank" id="lowerframe" style=" display:none; width:100%; height:100%; border:0; overflow-x: hidden!important;" allowfullscreen></iframe>
+			</div>
+		</div>
+	</div>
+
 </body>
 <script  type="text/javascript" src="js/typeahead.js"></script>
 <script  type="text/javascript" src="js/html5sql.js"></script>

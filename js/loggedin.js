@@ -5,15 +5,32 @@ var tablename;
 var currentday;
 var globaltask;
 var globaltime;
+var colortoggle;
 
 username = getCookie('username');
 tablename = getCookie('tablename');
 currentday = getCookie('currentday');
 globaltask = getCookie('task');
+colortoggle = getCookie('colortoggle');
+if(colortoggle==null) colortoggle=0;
+
+if(username==null || tablename==null || globaltask==null || currentday==null) logout();
 if(globaltask=='_firsttimeopen_' || globaltask=='_justopened_') globaltime = -2;
 else globaltime = getCookie('starttime');
 
 var urltrigger = 0;
+
+function logout()
+{
+	setTimeout(function(){
+		docCookies.removeItem('task');
+		docCookies.removeItem('starttime');
+		docCookies.removeItem('username');
+		docCookies.removeItem('tablename');
+		docCookies.removeItem('currentday');
+		window.location.replace('index.html');
+	},1);
+}
 function onGeneratedRow(rows)
 {
 	var ans = [];
@@ -26,6 +43,24 @@ function onGeneratedRow(rows)
 	}
 	var jsonData6 = {};
 	jsonData6['num'] = 'App:Calendar';
+	ans.push(jsonData6);
+	jsonData6 = {};
+	jsonData6['num'] = 'App:Statistics';
+	ans.push(jsonData6);
+	jsonData6 = {};
+	jsonData6['num'] = 'App:Todoist';
+	ans.push(jsonData6);
+	jsonData6 = {};
+	jsonData6['num'] = 'App:Digg';
+	ans.push(jsonData6);
+	jsonData6 = {};
+	jsonData6['num'] = 'App:Any.Do';
+	ans.push(jsonData6);
+	jsonData6 = {};
+	jsonData6['num'] = 'Google:';
+	ans.push(jsonData6);
+	jsonData6 = {};
+	jsonData6['num'] = 'App:Flipboard';
 	ans.push(jsonData6);
 	var jsonData1 = {};
 	jsonData1['num'] = 'Reading:Tech News This Week';
@@ -46,51 +81,45 @@ function onGeneratedRow(rows)
 }
 
 $(document).on("dblclick", function (){
-    $("#task").trigger("focus");
- });
-
- $('#rdigg').contents().delegate('digg-alerts-container', 'onload', function() {
-      alert("loaded"); 
-  });
-
-var loaded1 = 0;
-var loaded2 = 0;
-$('#rdigg').load(function(){
-	$("#loading").hide();
-  	$("#rdigg").show();
-  	$("#didnot1").hide();
-	loaded1 = 1;
-  	
-  	
-  	$("#rdigg").contents().find("#digg-alerts-container").hide();
-  	setTimeout(function(){
-  			$("#rdigg").contents().find("#digg-header").hide();
-  			setTimeout(function(){
-  				$("#rdigg").contents().find("#digg-header").show();
-  			},1000);
-		},5000);
-
+	$("#task").trigger("focus");
 });
-$('#todoframe').load(function(){
-	
-  	$("#loading2").hide();
-  	$("#didnot2").hide();
-  	$("#todoframe").show();
-  	loaded2 = 1;
 
+$('#rdigg').contents().delegate('digg-alerts-container', 'onload', function() {
+	alert("loaded"); 
 });
+
+$('#lowerframe').load(function(){
+	$('#loadinglower').hide();
+	if(document.getElementById("lowerframe").src != "about:blank") 
+	{
+		$('#lowerframe').show();
+	}
+});
+
+function setcolor(){
+	if(colortoggle==0)
+	{
+		$('body').css("background", "white");
+		$('body').css("color", "black");
+		setTimeout(function(){
+			$('#themetext').html('Switch to Night Theme');
+		},3000);
+	}
+	else
+	{
+		$('body').css("background", "black");
+		$('body').css("color", "white");
+		setTimeout(function(){
+			$('#themetext').html('Switch to Day Theme');
+		},3000);
+	}
+
+}
 $(document).ready(function(){ 
-
 	
-	setTimeout(function(){
-		if(loaded2==0) $('#didnot2').show();
-	},10000);
-	setTimeout(function(){
-		if(loaded1==0) $('#didnot1').show();
-	},10000);
+	setcolor();
 	$('#clk').jsclock();
 	$("#statcount").val(1);
-
 	html5sql.openDatabase("users","Username Database",	1*1024*1024);
 	
 	html5sql.process(
@@ -108,7 +137,7 @@ $(document).ready(function(){
 				local: jsonData
 			});
 			numbers.initialize();
-                              
+
 			$('.typeahead').typeahead(null, {
 				minLength: 0,
 				displayKey: 'num',
@@ -119,7 +148,7 @@ $(document).ready(function(){
 		function(error, statement){
 			alert("Please report to developer following bug: " + error.message + " when processing " + statement);
 		}    
-	);
+		);
 
 	
 	
@@ -132,7 +161,7 @@ $(document).ready(function(){
 		if (e.keyCode === 13)
 		{
 			parseinput(0);
-            
+
 		}
 	});
 	$("#calend").keyup(function (e) {
@@ -158,13 +187,15 @@ $(document).ready(function(){
 					function(error, statement){
 						alert("Please report to developer following bug: " + error.message + " when processing " + statement);
 					}    
-				);
+					);
 			}
 		}
 	});
 	
 	
-	
+	$("#calcinput").keyup(function (e) {
+		calculate();
+	});
 	$("#statcount").keyup(function (e) {
 		if($("#statcount").val()>1)
 		{
@@ -176,17 +207,7 @@ $(document).ready(function(){
 		}
 		if (e.keyCode === 13)
 		{
-			if($("#statcount").val()<1)
-			{
-				bounceagain('#statcount');
-			}
-			else
-			{
-				//stat append
-				showstats(currentday-$("#statcount").val());
-				
-			}
-                     
+			showstats();
 		}
 	});
 	$('#task').focusout(function(){
@@ -194,44 +215,46 @@ $(document).ready(function(){
 		setTimeout(function(){sett()},10)
 	});
 	$('#task').focusin(function(){
-		focusaaya();
-				                          
+		focusaaya();		                          
 	});
-	document.getElementById('buttonstats').onclick = function()
-	{
-		if($('#buttonstats').html()=='Show Stats')
-		{
-			$("#sidebartasks").hide();
-			$("#sidebarstats").show();
-			showstats(currentday-$("#statcount").val());
-			$('#buttonstats').html('Show Tasks');
-		}else
-		{
-			$("#sidebarstats").hide();
-			$("#sidebartasks").show();
-			$('#buttonstats').html('Show Stats');
-		
-		}
+
+	document.getElementById('logoutdiv').onclick=function(){
+		logout();
 	}
-	document.getElementById('logoutbutton').onclick = function()
-	{
-		parseinput(1);
-		$('#boddy').addClass('animated zoomOutDown');
-		setTimeout(function(){
-			docCookies.removeItem('task');
-			docCookies.removeItem('starttime');
-			docCookies.removeItem('username');
-			docCookies.removeItem('tablename');
-			docCookies.removeItem('currentday');
-			window.location.replace('index.html');
-		},1000);
-		
+	document.getElementById('themetext').onclick=function(){
+		colortoggle = 1-colortoggle;
+		setCookie("colortoggle",colortoggle,30);
+		setcolor();
 	}
-	
+	document.getElementById('appstats').onclick=function(){
+		showDiv("",3);
+		showstats();
+	}
+	document.getElementById('apptodoist').onclick=function(){
+		showWebpage('todoist');
+	}
+	document.getElementById('appflipboard').onclick=function(){
+		showWebpage('flipboard');
+	}
+	document.getElementById('appany.do').onclick=function(){
+		showWebpage('any.do');
+	}
+	document.getElementById('appdigg').onclick=function(){
+		showWebpage('digg');
+	}
+	document.getElementById('appcalendar').onclick=function(){
+		showCalendar();
+	}
+	document.getElementById('appcalc').onclick=function(){
+		showDiv("",4);
+		$('#calcinput').focus();
+		calculate();
+	}
 	document.getElementById('click1').onclick=function(){
 		var gggl = 	globaltask;
 		if(globaltask.split(':').length>1) gggl = globaltask.split(':')[1];
 		showFrame('http://duckduckgo.com/?q='+gggl);
+		// showFrame('https://calendar.sunrise.am');
 	}
 	
 	document.getElementById('click2').onclick=function(){
@@ -250,7 +273,7 @@ $(document).ready(function(){
 		var ggl = (String)(gggl).toLowerCase();
 		var ggl1 = (String)(ggl.split("how to ").join(""));
 		var ggl2 = (String)(ggl1.split(" ").join("\-"));
-				
+
 		showFrame('http://www.wikihow.com/'+ggl2);
 	}
 	document.getElementById('click5').onclick=function(){
@@ -268,9 +291,8 @@ $(document).ready(function(){
 		if(globaltask.split(':').length>1) gggl = globaltask.split(':')[1];
 		showFrame('http://duckduckgo.com/?iax=1&ia=images&q='+gggl);
 //		showFrame('http://www.metrolyrics.com/rockstar-lyrics-nickelback.html);
-	}
+}
 });
-
 function setT(){
 	setTimeout(function() {
 		setttime();       // repeat
@@ -281,46 +303,43 @@ function focusaaya()
 {
 	document.getElementById("uparwala").style.textAlign = "left";
 	document.getElementById("lower").style.display = "none";
-	document.getElementById("linee").style.display = "none";
-	document.getElementById("minn").style.display = "none";
-	document.getElementById("iccon").style.display = "none";
-        
 }
 function focusgaya()
 {
 	document.getElementById("uparwala").style.textAlign = "center";
 	document.getElementById("lower").style.display = "block";
-	document.getElementById("linee").style.display = "block";
-	document.getElementById("minn").style.display = "block";
-	document.getElementById("iccon").style.display = "block";
-
 }
 
-function showstats(frday)
+function showstats()
 {
-	
-	var str = "";
+	if($("#statcount").val()<1)
+	{
+		bounceagain('#statcount');
+	}
+	else
+	{
+		//stat append
+		var frday = currentday-$("#statcount").val();
+		var str = "";
 
-	html5sql.process(
-		[
-		"select type,sum(time) as timesum from "+tablename+" WHERE day > "+frday+" AND type != 'currentday' AND type != 'App' AND type != 'URL' group by type  ORDER by sum(time) DESC"
-		],
-		function(transaction, results){
-			var i;
-			for(i=0;i<results.rows.length;i++)
-			{
-				if(results.rows.item(i)['timesum']>0)str += "<h3>"+results.rows.item(i)['type']+"</h3><p>"+getTimeString(results.rows.item(i)['timesum'])+"</p>";
-			}		
-			$('#stdata').html(str);
-		},      
-		function(error, statement){
-			alert("Please report to developer following bug: " + error.message + " when processing " + statement);
-		}    
-	);
-	
-	// repeat
-
-	
+		html5sql.process(
+			[
+			"select type,sum(time) as timesum from "+tablename+" WHERE day > "+frday+" AND type != 'currentday' AND type != 'App' AND type != 'URL' group by type  ORDER by sum(time) DESC"
+			],
+			function(transaction, results){
+				var i;
+				for(i=0;i<results.rows.length;i++)
+				{
+					if(results.rows.item(i)['timesum']>0)str += "<h3>"+results.rows.item(i)['type']+"</h3><p>"+getTimeString(results.rows.item(i)['timesum'])+"</p>";
+				}		
+				$('#stdata').html(str);
+			},      
+			function(error, statement){
+				alert("Please report to developer following bug: " + error.message + " when processing " + statement);
+			}    
+			);
+		
+	}
 }
 function parseinput(flag)
 {
@@ -335,7 +354,7 @@ function parseinput(flag)
 			"SELECT * FROM "+tablename+" WHERE type = '"+categ+"' AND day="+currentday,
 			],
 			function(transaction, results){
-			
+
 				if(results.rows.length==0)
 				{
 					html5sql.process(
@@ -348,7 +367,7 @@ function parseinput(flag)
 						function(error, statement){
 							alert("Please report to developer following bug: " + error.message + " when processing " + statement);
 						}    
-					);
+						);
 				}
 				else
 				{
@@ -364,20 +383,19 @@ function parseinput(flag)
 						function(error, statement){
 							alert("Please report to developer following bug: " + error.message + " when processing " + statement);
 						}    
-					);
+						);
 				}
 			},      
 			function(error, statement){
 				alert("Please report to developer following bug: " + error.message + " when processing " + statement);
-			}    
-		);
-		
+			}
+			);
 	}
 	else
 	{
 		afterparse();
 	}
-	
+
 	if(flag==0 && document.getElementById("task").value=='Sleeping')
 	{
 		var r = confirm("This will reset your sleep cycle and increment the day count in you life by 1. Press Cancel if you would prefer resting instead.");
@@ -395,7 +413,7 @@ function parseinput(flag)
 				function(error, statement){
 					alert("Please report to developer following bug: " + error.message + " when processing " + statement);
 				}    
-			);
+				);
 		}
 		else
 		{
@@ -410,6 +428,7 @@ function parseinput(flag)
 function afterparse(){
 	deletecoin();
 	globaltask = document.getElementById("task").value;
+	if(globaltask=="") globaltask = "_justopened_";
 	var tas = globaltask.split(':');
 	if(tas.length==1 && globaltask!='Sleeping')
 	{
@@ -421,11 +440,18 @@ function afterparse(){
 	setttime();
 	sett();
 	$('#task').blur();
+	if(tas.length>1)
+	{
+		$('#taskmain').html(tas[0]+" ");
+	}
+	else{
+		$('#taskmain').html("");	
+	}
 }
 
 function sett()
 {
-	if(globaltime==-2)
+	if(globaltime==-2 || globaltask=='_justopened_')
 	{
 		if(globaltask=='_firsttimeopen_')
 		{
@@ -439,37 +465,139 @@ function sett()
 	else document.getElementById("task").value = globaltask;
 	
 	setFrame();
+	var tas = globaltask.split(':');
+	if(tas.length>1)
+	{
+		$('#taskmain').html(tas[0]+" ");
+	}
+	else{
+		$('#taskmain').html("");	
+	}
 }
 
 function showFrame(str)
 {
 	$('#lowerdisplay').hide();
-	$('#lowerframe').show();
+	$('#loadinglower').show();
 	document.getElementById("lowerframe").src= str;
 }
 
 function showDiv(str,flag)
 {
 	$('#lowerdisplay').show();
-	$('#lowerframe').hide();
-	document.getElementById("lowerframe").src= "";
+	document.getElementById("lowerframe").src= "about:blank";
+	$('#lowerframe').hide();	
 	if(flag==1) 
 	{
 		$('#normal').hide();
 		$('#abnormal').show();
 		$('#calad').hide();
-		$('#abnormal').html(str);
+		$('#sidebarstats').hide();
+		$('#customhtml').show();
+		$('#customhtml').html(str);
+		$('#calculator').hide();
+		$('#welcome').hide();
 	}else if(flag==2) 
 	{
 		$('#normal').hide();
 		$('#abnormal').show();
-		$('#calad').show();		
+		$('#calad').show();
+		$('#customhtml').hide();
+		$('#sidebarstats').hide();
+		$('#calculator').hide();
+		$('#welcome').hide();
+	}
+	else if(flag==3)
+	{
+		$('#normal').hide();
+		$('#abnormal').show();
+		$('#calad').hide();
+		$('#customhtml').hide();
+		$('#sidebarstats').show();
+		$('#calculator').hide();
+		$('#welcome').hide();
+	}
+	else if(flag==4)
+	{
+		$('#normal').hide();
+		$('#abnormal').show();
+		$('#calad').hide();
+		$('#customhtml').hide();
+		$('#sidebarstats').hide();
+		$('#calculator').show();
+		$('#welcome').hide();
+	}
+	else if(flag==5)
+	{
+		$('#normal').hide();
+		$('#abnormal').show();
+		$('#calad').hide();
+		$('#customhtml').hide();
+		$('#sidebarstats').hide();
+		$('#calculator').hide();
+		$('#welcome').show();
 	}
 	else if(flag==0)
 	{
 		$('#normal').show();
 		$('#calad').hide();	
 		$('#abnormal').hide();
+	}
+}
+
+function calculate(){
+	var stt;
+	try {
+		stt = math.eval($('#calcinput').html());
+		if(stt==undefined)
+		{
+			stt="Some error, see example inputs below.";
+		}
+	}
+	catch(err) {
+		stt = "Some error, see example inputs below.";
+	}
+	$('#calcans').html(stt);
+}
+
+function showCalendar(){
+	html5sql.process(
+		[
+		"SELECT * FROM "+tablename+" WHERE time = -1",
+		],
+		function(transaction, results){
+			if(results.rows.length==0)
+			{
+				showDiv('',2);
+			}
+			else
+			{
+				showFrame(results.rows.item(0)['type']);
+			}
+		},      
+		function(error, statement){
+			alert("Please report to developer following bug: " + error.message + " when processing " + statement);
+		}    
+		);
+}
+
+function showWebpage(inp)
+{
+	if(inp=='todoist')
+	{
+		showFrame('http://todoist.com');
+	}
+	else if(inp=='digg')
+	{
+		showFrame('http://digg.com');	
+	}
+	else if(inp=='any.do')
+	{
+		showFrame('https://web.any.do/');	
+	}
+	else if(inp=='flipboard')
+	{
+		showFrame('http://about.flipboard.com/magazines/');	
 	}
 }
 function setFrame(){
@@ -479,7 +607,7 @@ function setFrame(){
 	{
 		if(tas[0]=='_firsttimeopen_' || tas[0]=='_justopened_' || tas[0]=='')
 		{
-			showDiv("<h1>About JhonnyM</h1><hr style='width:50%;'><h2>Meet JhonnyM, your dumb assistant.<br></h2><h4 style='font-weght:200; text-align:justify; margin:10px;'>Just tell him what you are doing and he will try his best to serve you. He is <em>always</em> there to keep track of what you are up to. You can see the statistics and improve with time. For categorizing your processes, JhonnyM just picks the thing behind the first colon in your current task (We told you! He is dumb). E.g. 'Meeting: With John' would be categorized as Meeting. If no colon is present, he assumes you don't want him to count.<br>Your day count is maintained according to your sleep cycles. So whenever you inform JhonnyM that you are sleeping, he increments your day count.<br><br>Start by reading some tech news this week.</h4><h6>This app has been developed by <a href='http://cse.iitkgp.ac.in/~arkanath/'>Arkanath</a>.Report to him for bugs, or fix them on GitHub :)</h6></span>",1);
+			showDiv("",5);
 		}
 		else if(tas[0]=='Sleeping')
 		{
@@ -505,59 +633,28 @@ function setFrame(){
 		if(tas[0]=='Youtube')
 		{
 			showFrame('http://youtube.com/embed/?listType=search&list='+tas[1]);
-			$('#iccon').removeClass();
-			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-play-circle');
 		}
 		else if(tas[0]=='Calculate')
 		{
-			$('#iccon').removeClass();
-			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-plus');
-			var str= '<h1 style="text-align:center;">Calculator</h1><hr style="width:50%;">';
-			str+='<p class="lead" style="text-align:center;">'+tas[1]+'</p>';
-			var stt;
-			try {
-			    stt = math.eval(tas[1]);
-			    if(stt==undefined)
-			    {
-			    	stt="Some error, see example inputs below.";
-			    }
-			}
-			catch(err) {
-			    stt = "Some error, see example inputs below.";
-			}
-			str+='<h2 style="text-align:center;">'+stt+'</h2>';
-			str+='<hr style="width:75%; margin-bottom:0;">';
-			str+='<h3 style="text-align:center; font-weight:200;">Examples</h3>';
-			str+='<h2 style="text-align:center; font-weight:200;">2*3+4 : <span style="font-weight:500">10</span></h2>';
-			str+='<h2 style="text-align:center; font-weight:200;">cos(45 deg) : <span style="font-weight:500">0.707</span></h2>';
-			str+='<h2 style="text-align:center; font-weight:200;">sqrt(3^2 + 4^2) : <span style="font-weight:500">5</span></h2>';
-			str+='<h2 style="text-align:center; font-weight:200;">sqrt(2+3i) : <span style="font-weight:500">1.67+0.89i</span></h2>';
-
-			showDiv(str,1);
+			$('#calcinput').html(tas[1]);
+			calculate();
+			showDiv("",4);
 		}
 		else if(tas[0]=='Define')
 		{
 			showFrame('http://www.oxforddictionaries.com/us/definition/american_english/'+tas[1]);
-			$('#iccon').removeClass();
-			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-bookmark');
 		}
 		else if(tas[0]=='Search')
 		{
 			showFrame('http://duckduckgo.com/?q='+tas[1]);
-			$('#iccon').removeClass();
-			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-search');
 		}
 		else if(tas[0]=='Search News')
 		{
 			showFrame('http://www.bing.com/news/search?q='+tas[1]);
-			$('#iccon').removeClass();
-			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-font');
 		}
 		else if(tas[0]=='Search Images')
 		{
 			showFrame('http://duckduckgo.com/?iax=1&ia=images&q='+tas[1]);
-			$('#iccon').removeClass();
-			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-picture');
 		}
 		else if(tas[0]=='URL')
 		{
@@ -568,8 +665,16 @@ function setFrame(){
 			setCookie('task',globaltask,30);
 			setCookie('starttime',globaltime,30);
 			$('#task').blur();
-			$('#iccon').removeClass();
-			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-globe');
+		}
+		else if(tas[0]=='Google')
+		{
+			window.open('http://www.google.com/#safe=off&q='+tas[1],'_blank');
+			document.getElementById("task").value = "Browsing";
+			globaltask = "Browsing";
+			globaltime = -1;
+			setCookie('task',globaltask,30);
+			setCookie('starttime',globaltime,30);
+			$('#task').blur();
 		}
 		else if(tas[0]=='Reading')
 		{
@@ -596,34 +701,40 @@ function setFrame(){
 				$('#click7').html("Bing News Search for <span style='font-weight:500;'>"+tas[1]+"</span>");
 				showDiv("",0);
 			}
-			$('#iccon').removeClass();
-			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-book');
 		}
 		else if(tas[0]=='App')
 		{
 			if(tas[1]=='Calendar')
 			{
-				html5sql.process(
-					[
-					"SELECT * FROM "+tablename+" WHERE time = -1",
-					],
-					function(transaction, results){
-						if(results.rows.length==0)
-						{
-							showDiv('',2);
-						}
-						else
-						{
-							showFrame(results.rows.item(0)['type']);
-						}
-					},      
-					function(error, statement){
-						alert("Please report to developer following bug: " + error.message + " when processing " + statement);
-					}    
-				);
+				showCalendar();
 			}
-			$('#iccon').removeClass();
-			$('#iccon').addClass('animated zoomIn glyphicon glyphicon-calendar');
+			else if(tas[1]=='Statistics')
+			{
+				showDiv("",3);
+				showstats();
+			}
+			else if(tas[1]=='Calculator')
+			{
+				showDiv("",4);
+				$('#calcinput').focus();
+				calculate();
+			}
+			else if(tas[1]=='Digg')
+			{
+				showWebpage('digg');
+			}
+			else if(tas[1]=='Todoist')
+			{
+				showWebpage('todoist');
+			}
+			else if(tas[1]=='Flipboard')
+			{
+				showWebpage('flipboard');
+			}
+			else if(tas[1]=='Any.Do')
+			{
+				showWebpage('any.do');
+			}
 		}
 		else
 		{
@@ -645,7 +756,7 @@ function getTimeString(t1)
 	var days = parseInt((t1/(24*60*60*1000)));
 	var minutes = parseInt((t1/(60*1000)));
 	var seconds = parseInt((t1/(1000)));
-    
+
 	var str = "";
 	if(days>0)
 	{
@@ -669,23 +780,6 @@ function getTimeString(t1)
 	return str;
 }
 
-function taskupdate()
-{
-	var stryou = "http://youtube.com/embed/?listType"+'='+"search&list"+'=';
-	stryou = stryou +""+ document.getElementById("task").value;
-	document.getElementById("lowerframe").src=stryou;
-	if(t3.indexOf("interested in tech")>-1)
-	{
-		document.getElementById("lowerframe").src='https://flipboard.com/section/the-verge-weekender%3A-best-of-the-week-b6O2hB?utm_source=fbcom&utm_medium=storepage&utm_content=category_techandscience&utm_campaign=magswelove';
-		document.getElementById("lowerframe").style.backgroundImage="url('load.gif')";
-	}
-	else
-	{
-		//document.getElementById("lowerframe").src="";
-		document.getElementById("lowerframe").style.backgroundImage="";
-	}
-    
-}
 function setttime()
 {
 	if(globaltime==-2)
@@ -777,14 +871,4 @@ function deletecoin()
 
 function getCookie(cname) {
 	return docCookies.getItem(cname);
-	// var name = cname + "=";
-	// var ca = document.cookie.split(';');
-	// for(var i=0; i<ca.length; i++) {
-	// 	var c = ca[i];
-	// 	while (c.charAt(0)==' ') c = c.substring(1);
-	// 	if (c.indexOf(name) != -1) {
-	// 		return c.substring(name.length, c.length);
-	// 	}
-	// }
-	// return "";
 }
