@@ -1,5 +1,8 @@
 JhonnyM
 =======
+
+Check out the GitHub page [here](http://arkanath.github.io/JhonnyM/).
+
 A productivity app for monitoring your daily progress.
 
 The is a client-side application and uses the Web SQL introduced with HTML5.
